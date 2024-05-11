@@ -28,17 +28,4 @@ public class CorsConfig implements WebMvcConfigurer {
                 .maxAge(3600);
     }
 
-    @Bean
-    @Order(Ordered.HIGHEST_PRECEDENCE)
-    public CorsFilter corsFilter() {
-        CorsConfiguration corsConfig = new CorsConfiguration();
-        corsConfig.addAllowedOrigin("*");
-        corsConfig.addAllowedMethod("*"); // Permitir todos os métodos (GET, POST, PUT, DELETE, etc)
-        corsConfig.addAllowedHeader("*"); // Permitir todos os cabeçalhos
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", corsConfig);
-
-        return new CorsFilter(source);
-    }
 }

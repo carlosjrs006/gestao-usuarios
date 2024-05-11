@@ -27,19 +27,20 @@ public class SecurityConfigurations {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return  httpSecurity
+        return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/user").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST,"/user/register").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"/user/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE,"/user/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT,"/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/user/register").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/user/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/user/{id}").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(corsFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(securityFilter, CorsFilter.class)
                 .build();
     }
 
@@ -53,5 +54,16 @@ public class SecurityConfigurations {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        corsConfig.addAllowedOrigin("*");
+        corsConfig.addAllowedMethod("*");
+        corsConfig.addAllowedHeader("*");
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfig);
+
+        return new CorsFilter(source);
+    }
 }
