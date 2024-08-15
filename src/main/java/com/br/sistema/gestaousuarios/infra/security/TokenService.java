@@ -26,7 +26,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             List<String> roles = user.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
+                    .toList();
             return JWT.create()
                     .withIssuer("auth-api")
                     .withSubject(user.getLogin())
